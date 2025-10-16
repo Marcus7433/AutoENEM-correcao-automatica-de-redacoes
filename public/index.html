@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Corretor de Redações IA</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    textarea { width: 100%; }
+    pre { background-color: #f4f4f4; padding: 10px; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h2>Corretor de Redações (LLaMA 3 - Groq)</h2>
+
+  <textarea id="redacao" rows="10" placeholder="Cole sua redação aqui..."></textarea><br><br>
+  <button onclick="corrigir()">Corrigir</button>
+
+  <h3>Resultado:</h3>
+  <pre id="resultado">Aqui aparecerá a análise da redação.</pre>
+
+  <script>
+    async function corrigir() {
+      const texto = document.getElementById("redacao").value;
+
+      try {
+        const resposta = await fetch("http://localhost:3000/corrigir", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ texto })
+        });
+
+        if (!resposta.ok) {
+          throw new Error("Erro na requisição: " + resposta.status);
+        }
+
+        const dados = await resposta.json();
+        document.getElementById("resultado").textContent = dados.analise;
+      } catch (err) {
+        document.getElementById("resultado").textContent = "Erro: " + err.message;
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>
